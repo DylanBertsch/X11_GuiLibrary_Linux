@@ -1,0 +1,1 @@
+/usr/bin/c++  -g   CMakeFiles/x11Test.dir/main.cpp.o  -o x11Test /usr/lib/x86_64-linux-gnu/libX11.so 

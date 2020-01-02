@@ -1,0 +1,18 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/dylan/CLionProjects/x11Test/main.cpp
+iostream
+-
+X11/Xlib.h
+-
+X11/Xutil.h
+-
+X11/Xos.h
+-
+
