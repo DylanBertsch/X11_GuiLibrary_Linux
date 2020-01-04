@@ -1,4 +1,5 @@
 file(REMOVE_RECURSE
+  "CMakeFiles/x11Test.dir/gui_library.cpp.o"
   "CMakeFiles/x11Test.dir/main.cpp.o"
   "x11Test"
   "x11Test.pdb"

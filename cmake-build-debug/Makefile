@@ -123,6 +123,33 @@ x11Test/fast:
 	$(MAKE) -f CMakeFiles/x11Test.dir/build.make CMakeFiles/x11Test.dir/build
 .PHONY : x11Test/fast
 
+gui_library.o: gui_library.cpp.o
+
+.PHONY : gui_library.o
+
+# target to build an object file
+gui_library.cpp.o:
+	$(MAKE) -f CMakeFiles/x11Test.dir/build.make CMakeFiles/x11Test.dir/gui_library.cpp.o
+.PHONY : gui_library.cpp.o
+
+gui_library.i: gui_library.cpp.i
+
+.PHONY : gui_library.i
+
+# target to preprocess a source file
+gui_library.cpp.i:
+	$(MAKE) -f CMakeFiles/x11Test.dir/build.make CMakeFiles/x11Test.dir/gui_library.cpp.i
+.PHONY : gui_library.cpp.i
+
+gui_library.s: gui_library.cpp.s
+
+.PHONY : gui_library.s
+
+# target to generate assembly for a file
+gui_library.cpp.s:
+	$(MAKE) -f CMakeFiles/x11Test.dir/build.make CMakeFiles/x11Test.dir/gui_library.cpp.s
+.PHONY : gui_library.cpp.s
+
 main.o: main.cpp.o
 
 .PHONY : main.o
@@ -159,6 +186,9 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... x11Test"
 	@echo "... edit_cache"
+	@echo "... gui_library.o"
+	@echo "... gui_library.i"
+	@echo "... gui_library.s"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"

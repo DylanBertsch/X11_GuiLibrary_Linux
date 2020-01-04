@@ -1,15 +1,6 @@
-#include <SPFD5408_Adafruit_GFX.h>    // Core graphics library
-#include <SPFD5408_Adafruit_TFTLCD.h> // Hardware-specific library
-#include <SPFD5408_TouchScreen.h>
-
-#define	BLACK   0x0000
-#define	BLUE    0x001F
-#define	RED     0xF800
-#define	GREEN   0x07E0
-#define CYAN    0x07FF
-#define MAGENTA 0xF81F
-#define YELLOW  0xFFE0
-#define WHITE   0xFFFF
+#include <X11/Xlib.h>
+#include <X11/Xutil.h>
+#include <X11/Xos.h>
 
 #define ITEM_OPTION 0
 #define ITEM_BUTTON 1
@@ -25,7 +16,7 @@
 #define DIR_DOWN 3
 
 /*
-Gui library for Adafruit TFT
+Gui library for X11 Window System
 
 Gui Elements:
 1. Label
@@ -108,7 +99,7 @@ public:
   {
     widgetType = ITEM_BUTTON;
     memcpy(widgetName,buttonName,10);
-    fun_ptr = FunctionPTR;
+    //fun_ptr = FunctionPTR;
   }
   void executeHandler()
   {
@@ -162,7 +153,7 @@ class editPage : public menuPage
 
    
   float* editPageValue;//There is a value to which the page is linked
-  label valueLabel = label("VALUE:",0,25,YELLOW);
+  label valueLabel = label("VALUE:",0,25,0);
   editorButton upValueButton = editorButton("UP",this,&editPage::editPageUPHandler,0,50);
   editorButton downValueButton = editorButton("DOWN",this,&editPage::editPageDOWNHandler,0,75);
   editPage() : menuPage()
@@ -182,12 +173,10 @@ class editPage : public menuPage
   void editPageUPHandler()
   {
     *editPageValue = *editPageValue + 1;
-    Serial.println("UP_VALUE");
-    Serial.println(*editPageValue);
     //Update the valueLabel
     char output[20];
     char fValue[16];
-    dtostrf(*editPageValue,3,2,fValue);
+    //dtostrf(*editPageValue,3,2,fValue);
     strcpy(output,"VALUE:");
     strcat(output,fValue);
     valueLabel.setValue(output);
@@ -199,7 +188,7 @@ class editPage : public menuPage
     //Update the valueLabel
     char output[20];
     char fValue[16];
-    dtostrf(*editPageValue,3,2,fValue);
+    //dtostrf(*editPageValue,3,2,fValue);
     strcpy(output,"VALUE:");
     strcat(output,fValue);
     valueLabel.setValue(output);
@@ -209,20 +198,48 @@ class editPage : public menuPage
 class Renderer
 {
   private:
-  Adafruit_TFTLCD* tftInstance;
+    //Define the X11 environment variables
+    Display *d;
+    int s;
+    Window* window;
+    GC* gc;
+    XEvent e;
+
   public:
+  int xCursor = 0;
+  int yCursor = 100;
+  XFontStruct* pageFont;
   menuPage* PAGES[5];
   menuPage* currentPage = NULL;
   menuPage* previousPage = NULL;  
   editPage EDITOR = editPage();  
   int pageCount = 0;
-  Renderer(Adafruit_TFTLCD* TFTInstance)
+  Renderer(Display* display, Window* inputwindow, GC* graphics_context)
   {
-    //EDITOR.addWidget(&valueLabel);
-    //EDITOR.addWidget(&upValueButton);
-    tftInstance = TFTInstance;
-   
+      d = display;
+      window = inputwindow;
+      gc = graphics_context;
+      //Set the font
+      Font font;
+      font = XLoadFont(d,"-b&h-lucida-medium-r-normal-sans-34-240-100-100-p-191-iso8859-1");//xlsfonts
+      pageFont = XQueryFont(d,font);
+      XSetFont(d,*gc,font);
+      //Set the initial text color
+      XSetForeground(d,*gc,WhitePixel(d,0));
   }
+  //X11 utilities
+  void setForegroundColor(int red, int green, int blue)
+  {
+      XColor color_cell;
+      color_cell.flags = DoRed | DoGreen | DoBlue;
+      color_cell.red = red;
+      color_cell.green = green;
+      color_cell.blue = blue;
+      Colormap cmap = XDefaultColormap(d,s);
+      XAllocColor(d,cmap,&color_cell);
+      XSetForeground(d,*gc,color_cell.pixel);
+  }
+
   void addPage(menuPage* inputPage);
   void selectCurrentOption();
   void moveSelectedItem(int DIRECTION);

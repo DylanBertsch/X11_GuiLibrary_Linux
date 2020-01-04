@@ -3,6 +3,6 @@ project(x11Test)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable(x11Test main.cpp)
+add_executable(x11Test main.cpp gui_library.cpp)
 find_package(X11 REQUIRED)
 target_link_libraries(x11Test ${X11_LIBRARIES})

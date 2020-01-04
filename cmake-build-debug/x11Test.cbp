@@ -84,6 +84,12 @@
 				</MakeCommands>
 			</Target>
 		</Build>
+		<Unit filename="/home/dylan/CLionProjects/x11Test/gui_library.cpp">
+			<Option target="x11Test"/>
+		</Unit>
+		<Unit filename="/home/dylan/CLionProjects/x11Test/gui_library.h">
+			<Option target="x11Test"/>
+		</Unit>
 		<Unit filename="/home/dylan/CLionProjects/x11Test/main.cpp">
 			<Option target="x11Test"/>
 		</Unit>
