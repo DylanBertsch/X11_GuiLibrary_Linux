@@ -154,8 +154,8 @@ class editPage : public menuPage
    
   float* editPageValue;//There is a value to which the page is linked
   label valueLabel = label("VALUE:",0,25,0);
-  editorButton upValueButton = editorButton("UP",this,&editPage::editPageUPHandler,0,50);
-  editorButton downValueButton = editorButton("DOWN",this,&editPage::editPageDOWNHandler,0,75);
+  editorButton upValueButton = editorButton("UP",this,&editPage::editPageUPHandler,0,125);
+  editorButton downValueButton = editorButton("DOWN",this,&editPage::editPageDOWNHandler,0,250);
   editPage() : menuPage()
   {    
     setTitle("EDITOR");
@@ -176,7 +176,7 @@ class editPage : public menuPage
     //Update the valueLabel
     char output[20];
     char fValue[16];
-    //dtostrf(*editPageValue,3,2,fValue);
+    sprintf(fValue,"%f",*editPageValue);
     strcpy(output,"VALUE:");
     strcat(output,fValue);
     valueLabel.setValue(output);
@@ -184,14 +184,14 @@ class editPage : public menuPage
 
   void editPageDOWNHandler()
   {
-    *editPageValue = *editPageValue - 1;
-    //Update the valueLabel
-    char output[20];
-    char fValue[16];
-    //dtostrf(*editPageValue,3,2,fValue);
-    strcpy(output,"VALUE:");
-    strcat(output,fValue);
-    valueLabel.setValue(output);
+      *editPageValue = *editPageValue - 1;
+      //Update the valueLabel
+      char output[20];
+      char fValue[16];
+      sprintf(fValue,"%f",*editPageValue);
+      strcpy(output,"VALUE:");
+      strcat(output,fValue);
+      valueLabel.setValue(output);
   }
 };
 

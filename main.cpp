@@ -35,8 +35,11 @@ int main() {
     mainPage.setTitle("Main Page");
     menuOption testOption = menuOption("Hello World.");
     menuOption testOption2 = menuOption("Option2.");
+    float value = 5.12;
+    editorLabel Param1 = editorLabel("Factor: ",250,250,0,&value);
     mainPage.addWidget(&testOption);
     mainPage.addWidget(&testOption2);
+    mainPage.addWidget(&Param1);
     Renderer renderer = Renderer(d,&w,&gc);
     renderer.addPage(&mainPage);
     while(1) {
@@ -55,6 +58,14 @@ int main() {
         {
             renderer.moveSelectedItem(DIR_DOWN);
 
+        }
+        if(e.xkey.keycode == 36)//36 = enter key
+        {
+            renderer.selectCurrentOption();
+        }
+        if(e.xkey.keycode == 56)//56 = 'b' key
+        {
+            renderer.back();
         }
         // Handle Windows Close Event
         if(e.type==ClientMessage)

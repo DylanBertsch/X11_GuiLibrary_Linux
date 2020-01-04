@@ -1,3 +1,4 @@
+#include <cstdio>
 #include "gui_library.h"
 
 void label::setValue(char newValue[])
@@ -82,7 +83,7 @@ void Renderer::selectCurrentOption()
         previousPage = currentPage;
         //Set the editPage float value; the value we are going to be editing....
         currentPage = &EDITOR;
-        //tftInstance->fillScreen(BLACK);
+        XClearWindow(d,*window);
         render();
     }
     if(wid->widgetType == ITEM_OPTION)
@@ -105,7 +106,6 @@ void Renderer::selectCurrentOption()
 void Renderer::back()
 {
     currentPage = previousPage;
-    //tftInstance->fillScreen(BLACK);
     //Reset all widgets on the currentPage
     widget* wid;
     for(int i = 0; i < currentPage->widgetCount; i++)
@@ -119,10 +119,10 @@ void Renderer::back()
 void Renderer::render()
 {
     //Render the pageTitle
-    //tftInstance->setCursor(85,0);
     int titleWidth = XTextWidth(pageFont,currentPage->title,strlen(currentPage->title));
     XDrawString(d,*window,*gc,500-(titleWidth/2),35,currentPage->title,strlen(currentPage->title));
     yCursor = 100;
+    XClearWindow(d,*window);
     for(int index = 0; index < currentPage->widgetCount; index++)
     {
         widget* widPTR = (widget*)currentPage->widget_array[index];
@@ -132,7 +132,7 @@ void Renderer::render()
             {
                 setForegroundColor(0,1000000000,0);
             }
-            else
+            else// Paint white if text is not selected.
             {
                 XSetForeground(d,*gc,WhitePixel(d,s));
             }
@@ -144,56 +144,44 @@ void Renderer::render()
                 XSetForeground(d,*gc,WhitePixel(d,s));//Draw a white line
                 XDrawLine(d,*window,*gc,0,yCursor+10,1000,yCursor+10);
                 yCursor = yCursor + 65;
-                //tftInstance->drawLine(0,tftInstance->getCursorY()+2,400,tftInstance->getCursorY()+2,BLUE);
-                //tftInstance->drawLine(0,tftInstance->getCursorY()+3,400,tftInstance->getCursorY()+3,BLUE);
-                //tftInstance->setCursor(0,tftInstance->getCursorY()+7);
-                //tftInstance->setTextColor(WHITE);
             }
             option->renderCount++;
         }
         if(widPTR->widgetType == ITEM_Label)
         {
             label* lbl1 = (label*)currentPage->widget_array[index];
-            if(index == currentPage->selectedItem)//Paint the text green if selected
+            if(index == currentPage->selectedItem)//Set the text color green to indicate selection
             {
-              //  tftInstance->setTextColor(GREEN);
+                setForegroundColor(0,1000000000,0);
             }
-            else
+            else// Paint white if text is not selected.
             {
-              //  tftInstance->setTextColor(lbl1->labelColor,BLACK);
+                XSetForeground(d,*gc,WhitePixel(d,s));
             }
-
-            //int prevCursorX = tftInstance->getCursorX();
-            //int prevCursorY = tftInstance->getCursorY();//Save the previous cursor values.
-            //tftInstance->fillRect(indexedItem->xpos+75,indexedItem->ypos,125,50,RED);
-            //tftInstance->setCursor(lbl1->xpos,lbl1->ypos);;
-            //tftInstance->println(lbl1->labelValue);
-            //tftInstance->setCursor(prevCursorX,prevCursorY);
+            int textWidth = XTextWidth(pageFont,lbl1->labelValue,strlen(lbl1->labelValue));
+            //XDrawRectangle(d,*window,*gc,lbl1->xpos,lbl1->ypos,textWidth,50);
+            XDrawString(d,*window,*gc,lbl1->xpos,lbl1->ypos+35,lbl1->labelValue,strlen(lbl1->labelValue));
             lbl1->renderCount++;
         }
         if(widPTR->widgetType == ITEM_EDITOR_LABEL)
         {
             editorLabel* lbl1 = (editorLabel*)currentPage->widget_array[index];
-            if(index == currentPage->selectedItem)//Paint the text green if selected
+            if(index == currentPage->selectedItem)//Set the text color green to indicate selection
             {
-
+                setForegroundColor(0,1000000000,0);
             }
-            else
+            else// Paint white if text is not selected.
             {
-
+                XSetForeground(d,*gc,WhitePixel(d,s));
             }
-
-            //int prevCursorX = tftInstance->getCursorX();
-            //int prevCursorY = tftInstance->getCursorY();//Save the previous cursor values.
-            //tftInstance->fillRect(indexedItem->xpos+75,indexedItem->ypos,125,50,RED);
-            //tftInstance->setCursor(lbl1->xpos,lbl1->ypos);
             char copyBuffer[50];
             char fValue[15];
-            //dtostrf(*lbl1->editorValue,3,2,fValue);
+            sprintf(fValue,"%f",*lbl1->editorValue);
             strcpy(copyBuffer,lbl1->labelValue);
             strcat(copyBuffer,fValue);
-            //tftInstance->println(copyBuffer);
-            //tftInstance->setCursor(prevCursorX,prevCursorY);
+            int textWidth = XTextWidth(pageFont,copyBuffer,strlen(copyBuffer));
+            //XDrawRectangle(d,*window,*gc,lbl1->xpos,lbl1->ypos,textWidth,50);
+            XDrawString(d,*window,*gc,lbl1->xpos,lbl1->ypos+35,copyBuffer,strlen(copyBuffer));
             lbl1->renderCount++;
         }
         if(widPTR->widgetType == ITEM_BUTTON)
@@ -224,17 +212,19 @@ void Renderer::render()
         if(widPTR->widgetType == ITEM_EDITOR_BUTTON)
         {
             editPage::editorButton* btn = (editPage::editorButton*)currentPage->widget_array[index];
-            if(index == currentPage->selectedItem)
+            if(index == currentPage->selectedItem)//Set the text color green to indicate selection
             {
-                //tftInstance->setTextColor(GREEN);
+                setForegroundColor(0,1000000000,0);
             }
-            else
+            else// Paint white if text is not selected.
             {
-                //tftInstance->setTextColor(WHITE);
+                XSetForeground(d,*gc,WhitePixel(d,s));
             }
             if(btn->xpos > 0 || btn->ypos > 0)//Forced Position bypass vertical layout.
             {
-
+                int textWidth = XTextWidth(pageFont,btn->widgetName,strlen(btn->widgetName));
+                XDrawRectangle(d,*window,*gc,btn->xpos,btn->ypos,textWidth,50);
+                XDrawString(d,*window,*gc,btn->xpos,btn->ypos+35,btn->widgetName,strlen(btn->widgetName));
             }
             else
             {

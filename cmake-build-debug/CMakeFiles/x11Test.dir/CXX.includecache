@@ -6,10 +6,6 @@
 
 #IncludeRegexTransform: 
 
-/home/dylan/CLionProjects/x11Test/gui_library.cpp
-gui_library.h
-/home/dylan/CLionProjects/x11Test/gui_library.h
-
 /home/dylan/CLionProjects/x11Test/gui_library.h
 X11/Xlib.h
 -
@@ -17,4 +13,16 @@ X11/Xutil.h
 -
 X11/Xos.h
 -
+
+/home/dylan/CLionProjects/x11Test/main.cpp
+iostream
+-
+X11/Xlib.h
+-
+X11/Xutil.h
+-
+X11/Xos.h
+-
+gui_library.h
+/home/dylan/CLionProjects/x11Test/gui_library.h
 
