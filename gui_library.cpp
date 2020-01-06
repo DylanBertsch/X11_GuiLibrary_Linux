@@ -14,33 +14,11 @@ void editorLabel::setValue(char newValue[])
 void menuPage::selectMoveDown()
 {
     selectedItem++;
-    //Set render count of option and button widgets to 0; this will rerender them
-    widget* wid;
-    for(int i = 0; i < widgetCount; i++)
-    {
-        wid = widget_array[i];
-        if(wid->widgetType == ITEM_OPTION || wid->widgetType == ITEM_BUTTON)
-        {
-            wid->renderCount = 0;
-        }
-
-    }
 }
 
 void menuPage::selectMoveUp()
 {
     selectedItem--;
-    //Set render count of option and button widgets to 0; this will rerender them
-    widget* wid;
-    for(int i = 0; i < widgetCount; i++)
-    {
-        wid = widget_array[i];
-        if(wid->widgetType == ITEM_OPTION || wid->widgetType == ITEM_BUTTON || wid->widgetType == ITEM_Label)
-        {
-            wid->renderCount = 0;
-        }
-
-    }
 }
 
 void menuPage::setTitle(char newTitle[])
@@ -111,13 +89,6 @@ void Renderer::selectCurrentOption()
 void Renderer::back()
 {
     currentPage = previousPage;
-    //Reset all widgets on the currentPage
-    widget* wid;
-    for(int i = 0; i < currentPage->widgetCount; i++)
-    {
-        wid = currentPage->widget_array[i];
-        wid->renderCount = 0;
-    }
     render();
 }
 
@@ -145,14 +116,11 @@ void Renderer::render()
             }
             //Print the Text
             menuOption* option = (menuOption*)currentPage->widget_array[index];
-            if(option->renderCount == 0)
-            {
-                XDrawString(d,*window,*gc,xCursor,yCursor,option->optionText,strlen(option->optionText));
-                XSetForeground(d,*gc,WhitePixel(d,s));//Draw a white line
-                XDrawLine(d,*window,*gc,0,yCursor+10,1000,yCursor+10);
-                yCursor = yCursor + 65;
-            }
-            option->renderCount++;
+            XDrawString(d,*window,*gc,xCursor,yCursor,option->optionText,strlen(option->optionText));
+            XSetForeground(d,*gc,WhitePixel(d,s));//Draw a white line
+            XDrawLine(d,*window,*gc,0,yCursor+10,1000,yCursor+10);
+            yCursor = yCursor + 65;
+
         }
         if(widPTR->widgetType == ITEM_Label)
         {
@@ -168,7 +136,6 @@ void Renderer::render()
             int textWidth = XTextWidth(pageFont,lbl1->labelValue,strlen(lbl1->labelValue));
             //XDrawRectangle(d,*window,*gc,lbl1->xpos,lbl1->ypos,textWidth,50);
             XDrawString(d,*window,*gc,lbl1->xpos,lbl1->ypos+35,lbl1->labelValue,strlen(lbl1->labelValue));
-            lbl1->renderCount++;
         }
         if(widPTR->widgetType == ITEM_EDITOR_LABEL)
         {
@@ -189,13 +156,10 @@ void Renderer::render()
             int textWidth = XTextWidth(pageFont,copyBuffer,strlen(copyBuffer));
             //XDrawRectangle(d,*window,*gc,lbl1->xpos,lbl1->ypos,textWidth,50);
             XDrawString(d,*window,*gc,lbl1->xpos,lbl1->ypos+35,copyBuffer,strlen(copyBuffer));
-            lbl1->renderCount++;
         }
         if(widPTR->widgetType == ITEM_BUTTON)
         {
             button* btn = (button*)currentPage->widget_array[index];
-            if(btn->renderCount == 0)
-            {
                 if(index == currentPage->selectedItem)//Set the text color green to indicate selection
                 {
                     setForegroundColor(0,1000000000,0);
@@ -214,9 +178,6 @@ void Renderer::render()
                 {
 
                 }
-
-            }
-            btn->renderCount++;
         }
 
         if(widPTR->widgetType == ITEM_EDITOR_BUTTON)
@@ -240,7 +201,6 @@ void Renderer::render()
             {
 
             }
-            btn->renderCount++;
         }
 
 
@@ -252,33 +212,11 @@ void Renderer::moveSelectedItem(int DIRECTION)
     if(DIRECTION == DIR_DOWN)
     {
         currentPage->selectedItem++;
-        //Set render count of option and button widgets to 0; this will rerender them
-        widget* wid;
-        for(int i = 0; i < currentPage->widgetCount; i++)
-        {
-            wid = currentPage->widget_array[i];
-            if(wid->widgetType == ITEM_OPTION || wid->widgetType == ITEM_BUTTON)
-            {
-                wid->renderCount = 0;
-            }
-
-        }
         render();
     }
     if(DIRECTION == DIR_UP)
     {
         currentPage->selectedItem--;
-        //Set render count of option and button widgets to 0; this will rerender them
-        widget* wid;
-        for(int i = 0; i < currentPage->widgetCount; i++)
-        {
-            wid = currentPage->widget_array[i];
-            if(wid->widgetType == ITEM_OPTION || wid->widgetType == ITEM_BUTTON)
-            {
-                wid->renderCount = 0;
-            }
-
-        }
         render();
     }
 }

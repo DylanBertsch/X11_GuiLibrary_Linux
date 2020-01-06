@@ -34,8 +34,7 @@ class widget{
   int xpos;
   int ypos;
   char widgetName[10];
-  int widgetType = -1; 
-  int renderCount = 0; 
+  int widgetType = -1;
   widget(int XPOS, int YPOS)
   {
     xpos = XPOS;
@@ -244,5 +243,6 @@ class Renderer
   void selectCurrentOption();
   void moveSelectedItem(int DIRECTION);
   void back();
+
   void render();
 };

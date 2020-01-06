@@ -64,7 +64,6 @@ int main() {
         if(e.xkey.keycode == 30)//30 = "u" key
         {
             renderer.moveSelectedItem(DIR_UP);
-
         }
         if(e.xkey.keycode == 40)//40 = "d" key
         {
