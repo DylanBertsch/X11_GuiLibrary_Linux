@@ -3,6 +3,12 @@
 #include <X11/Xutil.h>
 #include <X11/Xos.h>
 #include "gui_library.h"
+
+void func1()
+{
+    int i = 0;
+}
+
 int main() {
 
     Display *d;
@@ -37,9 +43,15 @@ int main() {
     menuOption testOption2 = menuOption("Option2.");
     float value = 5.12;
     editorLabel Param1 = editorLabel("Factor: ",250,250,0,&value);
+    label valueLabel1 = label("GoodValue",0,500,0);
+
+    button btn1 = button("btn1", func1, 25, 650);
     mainPage.addWidget(&testOption);
     mainPage.addWidget(&testOption2);
     mainPage.addWidget(&Param1);
+    mainPage.addWidget(&valueLabel1);
+    mainPage.addWidget(&btn1);
+    valueLabel1.setValue("Hello");
     Renderer renderer = Renderer(d,&w,&gc);
     renderer.addPage(&mainPage);
     while(1) {

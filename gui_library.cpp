@@ -94,13 +94,18 @@ void Renderer::selectCurrentOption()
         //tftInstance->fillScreen(BLACK);
         render();
     }
+    if(wid->widgetType == ITEM_BUTTON)
+    {
+        button* btn = (button*)wid;
+        btn->executeHandler();
+        render();
+    }
     if(wid->widgetType == ITEM_EDITOR_BUTTON)//In the editor context
     {
         //Run the handler function
         editPage::editorButton* editorButton = (editPage::editorButton*)wid;
         editorButton->executeHandler();
         render();
-
     }
 }
 void Renderer::back()
@@ -119,10 +124,12 @@ void Renderer::back()
 void Renderer::render()
 {
     //Render the pageTitle
+    XClearWindow(d,*window);
+    XSetForeground(d,*gc,WhitePixel(d,s));
     int titleWidth = XTextWidth(pageFont,currentPage->title,strlen(currentPage->title));
     XDrawString(d,*window,*gc,500-(titleWidth/2),35,currentPage->title,strlen(currentPage->title));
     yCursor = 100;
-    XClearWindow(d,*window);
+
     for(int index = 0; index < currentPage->widgetCount; index++)
     {
         widget* widPTR = (widget*)currentPage->widget_array[index];
@@ -189,22 +196,25 @@ void Renderer::render()
             button* btn = (button*)currentPage->widget_array[index];
             if(btn->renderCount == 0)
             {
-                if(index == currentPage->selectedItem)
+                if(index == currentPage->selectedItem)//Set the text color green to indicate selection
                 {
-
+                    setForegroundColor(0,1000000000,0);
                 }
-                else
+                else// Paint white if text is not selected.
                 {
-
+                    XSetForeground(d,*gc,WhitePixel(d,s));
                 }
                 if(btn->xpos > 0 || btn->ypos > 0)//Forced Position bypass vertical layout.
                 {
-
+                    int textWidth = XTextWidth(pageFont,btn->widgetName,strlen(btn->widgetName));
+                    XDrawRectangle(d,*window,*gc,btn->xpos,btn->ypos,textWidth,50);
+                    XDrawString(d,*window,*gc,btn->xpos,btn->ypos+35,btn->widgetName,strlen(btn->widgetName));
                 }
                 else
                 {
 
                 }
+
             }
             btn->renderCount++;
         }

@@ -94,12 +94,12 @@ class editorLabel : public widget
 
 class button : public widget{
 public:
-  void (*fun_ptr)();
-  button(char buttonName[], void* FunctionPTR, int XPOS, int YPOS) : widget(XPOS, YPOS)
+  void (*fun_ptr)(void);
+  button(char buttonName[], void(*function_pointer)(void), int XPOS, int YPOS) : widget(XPOS, YPOS)
   {
     widgetType = ITEM_BUTTON;
     memcpy(widgetName,buttonName,10);
-    //fun_ptr = FunctionPTR;
+    fun_ptr = function_pointer;
   }
   void executeHandler()
   {
