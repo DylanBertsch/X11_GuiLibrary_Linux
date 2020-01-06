@@ -59,13 +59,13 @@ public:
     float min = 0.0;
     float max = 1.0;
     char unitName[10];
-    HorizontalGraph(char* graphName,char* unitName, float MIN, float MAX, int XPOS, int YPOS) : Widget(XPOS, YPOS)
+    HorizontalGraph(char* graphName,char* UNITNAME, float MIN, float MAX, int XPOS, int YPOS) : Widget(XPOS, YPOS)
     {
         widgetType = ITEM_HGRAPH;
         min = MIN;
         max = MAX;
         strcpy(widgetName,graphName);
-        strcpy(unitName, unitName);
+        strcpy(unitName, UNITNAME);
     }
 
     void setValue(float newValue)

@@ -209,15 +209,20 @@ void Renderer::render()
         if(widPTR->widgetType == ITEM_HGRAPH)
         {
             //Set the foreground color to green
-            setForegroundColor(0,10000000,0);
+            setForegroundColor(0,10000000,120000);
             HorizontalGraph* horizontalGraph = (HorizontalGraph*)widPTR;
             XDrawRectangle(display, *window, *gc, horizontalGraph->xpos, horizontalGraph->ypos, 400, 100);
+            XDrawRectangle(display, *window, *gc, horizontalGraph->xpos+1, horizontalGraph->ypos+1, 400, 100);
+            XDrawRectangle(display, *window, *gc, horizontalGraph->xpos-1, horizontalGraph->ypos-1, 400, 100);
             //Draw the data bar according the the value
             int barWidth = (int)((400/(horizontalGraph->max-horizontalGraph->min))*horizontalGraph->value);
             setForegroundColor(10000000,0,0);
-            XFillRectangle(display, *window, *gc, horizontalGraph->xpos + 1, (int)(horizontalGraph->ypos + (100 / 2)), barWidth, 5);
+            XFillRectangle(display, *window, *gc, horizontalGraph->xpos + 1, (int)(horizontalGraph->ypos + (100 / 2)-20), barWidth, 25);
             //Draw the graph name, unit text, and graph value.
-            XDrawString(display,*window,*gc,horizontalGraph->xpos,horizontalGraph->ypos+75,"Test",strlen("Test"));
+            setForegroundColor(0,0,10000000);
+            XDrawString(display,*window,*gc,horizontalGraph->xpos,horizontalGraph->ypos+90,horizontalGraph->unitName,strlen(horizontalGraph->unitName));
+            setForegroundColor(0,10000000,0);
+            XDrawString(display,*window,*gc,horizontalGraph->xpos+(.75*400),horizontalGraph->ypos+90,"Test",strlen("Test"));
         }
 
     }//End of for loop
