@@ -29,43 +29,66 @@ Gui Elements:
   Shows a value in bar graph format.
 */
 
-class widget{
+class Widget{
   public:
   int xpos;
   int ypos;
   char widgetName[10];
   int widgetType = -1;
-  widget(int XPOS, int YPOS)
+  Widget(int XPOS, int YPOS)
   {
     xpos = XPOS;
     ypos = YPOS;
   }
 };
-class menuOption : public widget
+class menuOption : public Widget
 {
   public:
   char optionText[20];
   void* linkedPagePTR;
-  menuOption(char optionName[]): widget(-1,-1)
+  menuOption(char optionName[]): Widget(-1, -1)
   {
     strcpy(optionText,optionName);
     widgetType = ITEM_OPTION;
   }
 };
 
-class label : public widget
+class HorizontalGraph : public Widget{
+public:
+    float value = 0.0;
+    float min = 0.0;
+    float max = 1.0;
+    char unitName[10];
+    HorizontalGraph(char* graphName,char* unitName, float MIN, float MAX, int XPOS, int YPOS) : Widget(XPOS, YPOS)
+    {
+        widgetType = ITEM_HGRAPH;
+        min = MIN;
+        max = MAX;
+        strcpy(widgetName,graphName);
+        strcpy(unitName, unitName);
+    }
+
+    void setValue(float newValue)
+    {
+        value = newValue;
+    }
+
+};
+
+
+class label : public Widget
 {
   public:
   char labelValue[20];
   int labelColor = 0;
   void* editPagePointer;
-  label(char labelName[]) : widget(-1,-1)
+  label(char labelName[]) : Widget(-1, -1)
   {
     strcpy(labelValue,labelName);
     widgetType = ITEM_Label;
   }
 
-  label(char labelName[], int x, int y, int Color) : widget(x,y)
+  label(char labelName[], int x, int y, int Color) : Widget(x, y)
   {
     strcpy(labelValue,labelName);
     widgetType = ITEM_Label;
@@ -74,14 +97,14 @@ class label : public widget
   void setValue(char newValue[]);
 };
 
-class editorLabel : public widget
+class editorLabel : public Widget
 {
   public:
   char labelValue[20];
   int labelColor = 0;
   void* editPagePointer;  
   float* editorValue = NULL;
-  editorLabel(char labelName[], int x, int y, int Color, float* editorVALUE) : widget(x,y)
+  editorLabel(char labelName[], int x, int y, int Color, float* editorVALUE) : Widget(x, y)
   {
     strcpy(labelValue,labelName);
     widgetType = ITEM_EDITOR_LABEL;
@@ -91,10 +114,10 @@ class editorLabel : public widget
   void setValue(char newValue[]);
 };
 
-class button : public widget{
+class button : public Widget{
 public:
   void (*fun_ptr)(void);
-  button(char buttonName[], void(*function_pointer)(void), int XPOS, int YPOS) : widget(XPOS, YPOS)
+  button(char buttonName[], void(*function_pointer)(void), int XPOS, int YPOS) : Widget(XPOS, YPOS)
   {
     widgetType = ITEM_BUTTON;
     memcpy(widgetName,buttonName,10);
@@ -109,15 +132,15 @@ public:
 class menuPage
 {
   public:
-  widget* widget_array[5];
+  Widget* widget_array[5];
   char title[20];
   int widgetCount = 0;
   int selectedItem = 0;  
   void selectMoveDown();
   void selectMoveUp();
   void setTitle(char newTitle[]);
-  void addWidget(widget* inputWidget);
-  widget* selectMenuItem();//return a page when widget is clicked
+  void addWidget(Widget* inputWidget);
+  Widget* selectMenuItem();//return a page when Widget is clicked
   menuPage()
   {
   
@@ -130,12 +153,12 @@ class menuPage
 class editPage : public menuPage
 {
   public:
-  class editorButton : public widget
+  class editorButton : public Widget
   {
     void(editPage::*PTR)() = NULL;
     editPage* PTR2 = NULL;
     public:
-    editorButton(char buttonName[], editPage* EditPAGE_PTR,void(editPage::*ptr1)(), int XPOS, int YPOS) : widget(XPOS, YPOS)
+    editorButton(char buttonName[], editPage* EditPAGE_PTR,void(editPage::*ptr1)(), int XPOS, int YPOS) : Widget(XPOS, YPOS)
     {
       widgetType = ITEM_EDITOR_BUTTON;
       memcpy(widgetName,buttonName,10);
@@ -198,7 +221,7 @@ class Renderer
 {
   private:
     //Define the X11 environment variables
-    Display *d;
+    Display *display;
     int s;
     Window* window;
     GC* gc;
@@ -213,18 +236,19 @@ class Renderer
   menuPage* previousPage = NULL;  
   editPage EDITOR = editPage();  
   int pageCount = 0;
-  Renderer(Display* display, Window* inputwindow, GC* graphics_context)
+  Renderer(Display* DISPLAY, Window* inputwindow, GC* graphics_context, int S)
   {
-      d = display;
+      display = DISPLAY;
       window = inputwindow;
       gc = graphics_context;
+      s = S;
       //Set the font
       Font font;
-      font = XLoadFont(d,"-b&h-lucida-medium-r-normal-sans-34-240-100-100-p-191-iso8859-1");//xlsfonts
-      pageFont = XQueryFont(d,font);
-      XSetFont(d,*gc,font);
+      font = XLoadFont(display, "-b&h-lucida-medium-r-normal-sans-34-240-100-100-p-191-iso8859-1");//xlsfonts
+      pageFont = XQueryFont(display, font);
+      XSetFont(display, *gc, font);
       //Set the initial text color
-      XSetForeground(d,*gc,WhitePixel(d,0));
+      XSetForeground(display, *gc, WhitePixel(display, 0));
   }
   //X11 utilities
   void setForegroundColor(int red, int green, int blue)
@@ -234,9 +258,9 @@ class Renderer
       color_cell.red = red;
       color_cell.green = green;
       color_cell.blue = blue;
-      Colormap cmap = XDefaultColormap(d,s);
-      XAllocColor(d,cmap,&color_cell);
-      XSetForeground(d,*gc,color_cell.pixel);
+      Colormap cmap = XDefaultColormap(display, s);
+      XAllocColor(display, cmap, &color_cell);
+      XSetForeground(display, *gc, color_cell.pixel);
   }
 
   void addPage(menuPage* inputPage);

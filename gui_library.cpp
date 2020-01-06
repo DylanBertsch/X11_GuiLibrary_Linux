@@ -26,16 +26,16 @@ void menuPage::setTitle(char newTitle[])
     strcpy(title, newTitle);
 }
 
-void menuPage::addWidget(widget* inputWidget)
+void menuPage::addWidget(Widget* inputWidget)
 {
     widget_array[widgetCount] = inputWidget;
     widgetCount++;
 }
 
-widget* menuPage::selectMenuItem()
+Widget* menuPage::selectMenuItem()
 {
-    //Get widget from widget array storage
-    widget* wid = (widget*)widget_array[selectedItem];
+    //Get Widget from Widget array storage
+    Widget* wid = (Widget*)widget_array[selectedItem];
     return wid;
 }
 
@@ -51,7 +51,7 @@ void Renderer::addPage(menuPage* inputPage)
 
 void Renderer::selectCurrentOption()
 {
-    widget* wid = currentPage->selectMenuItem();
+    Widget* wid = currentPage->selectMenuItem();
     if(wid->widgetType == ITEM_EDITOR_LABEL)//Do edit label things... open edit page.
     {
         editorLabel* lbl = (editorLabel*)wid;
@@ -61,7 +61,7 @@ void Renderer::selectCurrentOption()
         previousPage = currentPage;
         //Set the editPage float value; the value we are going to be editing....
         currentPage = &EDITOR;
-        XClearWindow(d,*window);
+        XClearWindow(display, *window);
         render();
     }
     if(wid->widgetType == ITEM_OPTION)
@@ -95,15 +95,15 @@ void Renderer::back()
 void Renderer::render()
 {
     //Render the pageTitle
-    XClearWindow(d,*window);
-    XSetForeground(d,*gc,WhitePixel(d,s));
+    XClearWindow(display, *window);
+    XSetForeground(display, *gc, WhitePixel(display, s));
     int titleWidth = XTextWidth(pageFont,currentPage->title,strlen(currentPage->title));
-    XDrawString(d,*window,*gc,500-(titleWidth/2),35,currentPage->title,strlen(currentPage->title));
+    XDrawString(display, *window, *gc, 500 - (titleWidth / 2), 35, currentPage->title, strlen(currentPage->title));
     yCursor = 100;
 
     for(int index = 0; index < currentPage->widgetCount; index++)
     {
-        widget* widPTR = (widget*)currentPage->widget_array[index];
+        Widget* widPTR = (Widget*)currentPage->widget_array[index];
         if(widPTR->widgetType == ITEM_OPTION)
         {
             if(index == currentPage->selectedItem)//Set the text color green to indicate selection
@@ -112,16 +112,17 @@ void Renderer::render()
             }
             else// Paint white if text is not selected.
             {
-                XSetForeground(d,*gc,WhitePixel(d,s));
+                XSetForeground(display, *gc, WhitePixel(display, s));
             }
             //Print the Text
             menuOption* option = (menuOption*)currentPage->widget_array[index];
-            XDrawString(d,*window,*gc,xCursor,yCursor,option->optionText,strlen(option->optionText));
-            XSetForeground(d,*gc,WhitePixel(d,s));//Draw a white line
-            XDrawLine(d,*window,*gc,0,yCursor+10,1000,yCursor+10);
+            XDrawString(display, *window, *gc, xCursor, yCursor, option->optionText, strlen(option->optionText));
+            XSetForeground(display, *gc, WhitePixel(display, s));//Draw a white line
+            XDrawLine(display, *window, *gc, 0, yCursor + 10, 1000, yCursor + 10);
             yCursor = yCursor + 65;
 
         }
+
         if(widPTR->widgetType == ITEM_Label)
         {
             label* lbl1 = (label*)currentPage->widget_array[index];
@@ -131,12 +132,13 @@ void Renderer::render()
             }
             else// Paint white if text is not selected.
             {
-                XSetForeground(d,*gc,WhitePixel(d,s));
+                XSetForeground(display, *gc, WhitePixel(display, s));
             }
             int textWidth = XTextWidth(pageFont,lbl1->labelValue,strlen(lbl1->labelValue));
-            //XDrawRectangle(d,*window,*gc,lbl1->xpos,lbl1->ypos,textWidth,50);
-            XDrawString(d,*window,*gc,lbl1->xpos,lbl1->ypos+35,lbl1->labelValue,strlen(lbl1->labelValue));
+            //XDrawRectangle(display,*window,*gc,lbl1->xpos,lbl1->ypos,textWidth,50);
+            XDrawString(display, *window, *gc, lbl1->xpos, lbl1->ypos + 35, lbl1->labelValue, strlen(lbl1->labelValue));
         }
+
         if(widPTR->widgetType == ITEM_EDITOR_LABEL)
         {
             editorLabel* lbl1 = (editorLabel*)currentPage->widget_array[index];
@@ -146,7 +148,7 @@ void Renderer::render()
             }
             else// Paint white if text is not selected.
             {
-                XSetForeground(d,*gc,WhitePixel(d,s));
+                XSetForeground(display, *gc, WhitePixel(display, s));
             }
             char copyBuffer[50];
             char fValue[15];
@@ -154,9 +156,10 @@ void Renderer::render()
             strcpy(copyBuffer,lbl1->labelValue);
             strcat(copyBuffer,fValue);
             int textWidth = XTextWidth(pageFont,copyBuffer,strlen(copyBuffer));
-            //XDrawRectangle(d,*window,*gc,lbl1->xpos,lbl1->ypos,textWidth,50);
-            XDrawString(d,*window,*gc,lbl1->xpos,lbl1->ypos+35,copyBuffer,strlen(copyBuffer));
+            //XDrawRectangle(display,*window,*gc,lbl1->xpos,lbl1->ypos,textWidth,50);
+            XDrawString(display, *window, *gc, lbl1->xpos, lbl1->ypos + 35, copyBuffer, strlen(copyBuffer));
         }
+
         if(widPTR->widgetType == ITEM_BUTTON)
         {
             button* btn = (button*)currentPage->widget_array[index];
@@ -166,13 +169,13 @@ void Renderer::render()
                 }
                 else// Paint white if text is not selected.
                 {
-                    XSetForeground(d,*gc,WhitePixel(d,s));
+                    XSetForeground(display, *gc, WhitePixel(display, s));
                 }
                 if(btn->xpos > 0 || btn->ypos > 0)//Forced Position bypass vertical layout.
                 {
                     int textWidth = XTextWidth(pageFont,btn->widgetName,strlen(btn->widgetName));
-                    XDrawRectangle(d,*window,*gc,btn->xpos,btn->ypos,textWidth,50);
-                    XDrawString(d,*window,*gc,btn->xpos,btn->ypos+35,btn->widgetName,strlen(btn->widgetName));
+                    XDrawRectangle(display, *window, *gc, btn->xpos, btn->ypos, textWidth, 50);
+                    XDrawString(display, *window, *gc, btn->xpos, btn->ypos + 35, btn->widgetName, strlen(btn->widgetName));
                 }
                 else
                 {
@@ -189,13 +192,13 @@ void Renderer::render()
             }
             else// Paint white if text is not selected.
             {
-                XSetForeground(d,*gc,WhitePixel(d,s));
+                XSetForeground(display, *gc, WhitePixel(display, s));
             }
             if(btn->xpos > 0 || btn->ypos > 0)//Forced Position bypass vertical layout.
             {
                 int textWidth = XTextWidth(pageFont,btn->widgetName,strlen(btn->widgetName));
-                XDrawRectangle(d,*window,*gc,btn->xpos,btn->ypos,textWidth,50);
-                XDrawString(d,*window,*gc,btn->xpos,btn->ypos+35,btn->widgetName,strlen(btn->widgetName));
+                XDrawRectangle(display, *window, *gc, btn->xpos, btn->ypos, textWidth, 50);
+                XDrawString(display, *window, *gc, btn->xpos, btn->ypos + 35, btn->widgetName, strlen(btn->widgetName));
             }
             else
             {
@@ -203,8 +206,21 @@ void Renderer::render()
             }
         }
 
+        if(widPTR->widgetType == ITEM_HGRAPH)
+        {
+            //Set the foreground color to green
+            setForegroundColor(0,10000000,0);
+            HorizontalGraph* horizontalGraph = (HorizontalGraph*)widPTR;
+            XDrawRectangle(display, *window, *gc, horizontalGraph->xpos, horizontalGraph->ypos, 400, 100);
+            //Draw the data bar according the the value
+            int barWidth = (int)((400/(horizontalGraph->max-horizontalGraph->min))*horizontalGraph->value);
+            setForegroundColor(10000000,0,0);
+            XFillRectangle(display, *window, *gc, horizontalGraph->xpos + 1, (int)(horizontalGraph->ypos + (100 / 2)), barWidth, 5);
+            //Draw the graph name, unit text, and graph value.
+            XDrawString(display,*window,*gc,horizontalGraph->xpos,horizontalGraph->ypos+75,"Test",strlen("Test"));
+        }
 
-    }//End the for loop
+    }//End of for loop
 }
 
 void Renderer::moveSelectedItem(int DIRECTION)

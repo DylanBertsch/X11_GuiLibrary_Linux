@@ -44,15 +44,13 @@ int main() {
     float value = 5.12;
     editorLabel Param1 = editorLabel("Factor: ",250,250,0,&value);
     label valueLabel1 = label("GoodValue",0,500,0);
-
-    button btn1 = button("btn1", func1, 25, 650);
+    HorizontalGraph graph1 = HorizontalGraph("Graph1","PSI",0,75,0,250);
+    graph1.setValue(50.0);
     mainPage.addWidget(&testOption);
     mainPage.addWidget(&testOption2);
-    mainPage.addWidget(&Param1);
-    mainPage.addWidget(&valueLabel1);
-    mainPage.addWidget(&btn1);
+    mainPage.addWidget(&graph1);
     valueLabel1.setValue("Hello");
-    Renderer renderer = Renderer(d,&w,&gc);
+    Renderer renderer = Renderer(d,&w,&gc,s);
     renderer.addPage(&mainPage);
     while(1) {
         XNextEvent(d, &e);
@@ -65,7 +63,7 @@ int main() {
         {
             renderer.moveSelectedItem(DIR_UP);
         }
-        if(e.xkey.keycode == 40)//40 = "d" key
+        if(e.xkey.keycode == 40)//40 = "display" key
         {
             renderer.moveSelectedItem(DIR_DOWN);
 
