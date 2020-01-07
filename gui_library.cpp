@@ -211,18 +211,23 @@ void Renderer::render()
             //Set the foreground color to green
             setForegroundColor(0,10000000,120000);
             HorizontalGraph* horizontalGraph = (HorizontalGraph*)widPTR;
-            XDrawRectangle(display, *window, *gc, horizontalGraph->xpos, horizontalGraph->ypos, 400, 100);
-            XDrawRectangle(display, *window, *gc, horizontalGraph->xpos+1, horizontalGraph->ypos+1, 400, 100);
-            XDrawRectangle(display, *window, *gc, horizontalGraph->xpos-1, horizontalGraph->ypos-1, 400, 100);
+            XDrawRectangle(display, *window, *gc, horizontalGraph->xpos, horizontalGraph->ypos, 400, 150);
+            XDrawRectangle(display, *window, *gc, horizontalGraph->xpos+1, horizontalGraph->ypos+1, 400, 150);
+            XDrawRectangle(display, *window, *gc, horizontalGraph->xpos-1, horizontalGraph->ypos-1, 400, 150);
+            //Draw graph title
+            int titleWidth = XTextWidth(pageFont,horizontalGraph->widgetName,strlen(horizontalGraph->widgetName));
+            XDrawString(display,*window,*gc,horizontalGraph->xpos+(400/2)-(titleWidth/2),horizontalGraph->ypos+35,horizontalGraph->widgetName,strlen(horizontalGraph->widgetName));
             //Draw the data bar according the the value
             int barWidth = (int)((400/(horizontalGraph->max-horizontalGraph->min))*horizontalGraph->value);
             setForegroundColor(10000000,0,0);
-            XFillRectangle(display, *window, *gc, horizontalGraph->xpos + 1, (int)(horizontalGraph->ypos + (100 / 2)-20), barWidth, 25);
+            XFillRectangle(display, *window, *gc, horizontalGraph->xpos + 1, (int)(horizontalGraph->ypos + (100 / 2)+0), barWidth, 45);
             //Draw the graph name, unit text, and graph value.
             setForegroundColor(0,0,10000000);
-            XDrawString(display,*window,*gc,horizontalGraph->xpos,horizontalGraph->ypos+90,horizontalGraph->unitName,strlen(horizontalGraph->unitName));
+            XDrawString(display,*window,*gc,horizontalGraph->xpos,horizontalGraph->ypos+135,horizontalGraph->unitName,strlen(horizontalGraph->unitName));
             setForegroundColor(0,10000000,0);
-            XDrawString(display,*window,*gc,horizontalGraph->xpos+(.75*400),horizontalGraph->ypos+90,"Test",strlen("Test"));
+            char floatBuffer[10];
+            snprintf(floatBuffer,6,"%f",horizontalGraph->value);
+            XDrawString(display,*window,*gc,horizontalGraph->xpos+(.75*400),horizontalGraph->ypos+135,floatBuffer,strlen(floatBuffer));
         }
 
     }//End of for loop
