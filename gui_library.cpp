@@ -207,7 +207,24 @@ void Renderer::render()
             CircularGauge* circularGaugeWidget = (CircularGauge*)widPTR;
             XDrawRectangle(display, *window,*gc,circularGaugeWidget->xpos,circularGaugeWidget->ypos,250,250);
         }
+        if(widPTR->widgetType == ITEM_CoordinatePlane)
+        {
+            CoordinatePlaneDisplay* coordinateWidget = (CoordinatePlaneDisplay*)widPTR;
+            //Draw the bounding rectangle
+            setForegroundColor(100000000,0,0);
+            XDrawRectangle(display,*window,*gc,coordinateWidget->xpos,coordinateWidget->ypos,450,450);
+            XDrawRectangle(display,*window,*gc,coordinateWidget->xpos+1,coordinateWidget->ypos+1,450,450);
+            XDrawRectangle(display,*window,*gc,coordinateWidget->xpos-1,coordinateWidget->ypos-1,450,450);
+            //Plot points in vector
+            XSetLineAttributes(display,*gc,4,0,1,1);
+            setForegroundColor(0,100000000000,0);
+            for(CoordinatePlaneDisplay::Point point : coordinateWidget->points)
+            {
+                XFillArc(display,*window,*gc,coordinateWidget->xpos+point.x,coordinateWidget->ypos+450-point.y,10,10,0,360*64);
+            }
 
+
+        }
         if(widPTR->widgetType == ITEM_HGRAPH)
         {
             //Set the foreground color to green
@@ -247,4 +264,10 @@ void Renderer::moveSelectedItem(int DIRECTION)
         currentPage->selectedItem--;
         render();
     }
+}
+
+void CoordinatePlaneDisplay::plotPoint(float x, float y)
+{
+    Point point = Point(x,y);
+    points.push_back(point);
 }

@@ -46,12 +46,15 @@ int main() {
     label valueLabel1 = label("GoodValue",0,500,0);
     HorizontalGraph graph1 = HorizontalGraph("Graph1","PSI",0,75,0,250);
     graph1.setValue(50.0);
+    CoordinatePlaneDisplay coordinatePlaneDisplay = CoordinatePlaneDisplay(100,500,0,100,0,100);
+    coordinatePlaneDisplay.plotPoint(150,150);
+    coordinatePlaneDisplay.plotPoint(150,0);
     mainPage.addWidget(&testOption);
     mainPage.addWidget(&testOption2);
     mainPage.addWidget(&graph1);
+    mainPage.addWidget(&coordinatePlaneDisplay);
     valueLabel1.setValue("Hello");
-    CircularGauge circularGauge = CircularGauge(300,600);
-    mainPage.addWidget(&circularGauge);
+
     Renderer renderer = Renderer(d,&w,&gc,s);
     renderer.addPage(&mainPage);
     while(1) {

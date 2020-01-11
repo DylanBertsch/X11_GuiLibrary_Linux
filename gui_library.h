@@ -1,6 +1,7 @@
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <X11/Xos.h>
+#include <vector>
 
 #define ITEM_OPTION 0
 #define ITEM_BUTTON 1
@@ -9,6 +10,7 @@
 #define ITEM_ROUNDGAUGE 4
 #define ITEM_EDITOR_BUTTON 5
 #define ITEM_EDITOR_LABEL 6 //Differs from label becuase this is an editLabel which will spawn a editor on the screen.
+#define ITEM_CoordinatePlane 7
 
 #define DIR_LEFT 0
 #define DIR_RIGHT 1
@@ -51,6 +53,36 @@ class menuOption : public Widget
     strcpy(optionText,optionName);
     widgetType = ITEM_OPTION;
   }
+};
+using namespace std;
+class CoordinatePlaneDisplay : public Widget
+{
+    public:
+
+    class Point{
+    public:
+        float x;
+        float y;
+        Point(float X, float Y) {
+            x = X;
+            y = Y;
+        }
+    };
+
+    float xmin = 0.0;
+    float xmax = 0.0;
+    float ymin = 0.0;
+    float ymax = 0.0;
+    vector<Point> points;
+    CoordinatePlaneDisplay(int xpos, int ypos, float XMIN, float XMAX, float YMIN, float YMAX) : Widget(xpos,ypos)
+    {
+        xmin = XMIN;
+        xmax = XMAX;
+        ymin = YMIN;
+        ymax = YMAX;
+        widgetType = ITEM_CoordinatePlane;
+    }
+    void plotPoint(float x, float y);
 };
 
 class CircularGauge : public Widget{
