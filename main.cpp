@@ -50,6 +50,8 @@ int main() {
     mainPage.addWidget(&testOption2);
     mainPage.addWidget(&graph1);
     valueLabel1.setValue("Hello");
+    CircularGauge circularGauge = CircularGauge(300,600);
+    mainPage.addWidget(&circularGauge);
     Renderer renderer = Renderer(d,&w,&gc,s);
     renderer.addPage(&mainPage);
     while(1) {

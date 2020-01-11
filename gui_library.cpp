@@ -183,27 +183,29 @@ void Renderer::render()
                 }
         }
 
-        if(widPTR->widgetType == ITEM_EDITOR_BUTTON)
-        {
-            editPage::editorButton* btn = (editPage::editorButton*)currentPage->widget_array[index];
-            if(index == currentPage->selectedItem)//Set the text color green to indicate selection
+        if(widPTR->widgetType == ITEM_EDITOR_BUTTON) {
+            editPage::editorButton *btn = (editPage::editorButton *) currentPage->widget_array[index];
+            if (index == currentPage->selectedItem)//Set the text color green to indicate selection
             {
-                setForegroundColor(0,1000000000,0);
-            }
-            else// Paint white if text is not selected.
+                setForegroundColor(0, 1000000000, 0);
+            } else// Paint white if text is not selected.
             {
                 XSetForeground(display, *gc, WhitePixel(display, s));
             }
-            if(btn->xpos > 0 || btn->ypos > 0)//Forced Position bypass vertical layout.
+            if (btn->xpos > 0 || btn->ypos > 0)//Forced Position bypass vertical layout.
             {
-                int textWidth = XTextWidth(pageFont,btn->widgetName,strlen(btn->widgetName));
+                int textWidth = XTextWidth(pageFont, btn->widgetName, strlen(btn->widgetName));
                 XDrawRectangle(display, *window, *gc, btn->xpos, btn->ypos, textWidth, 50);
                 XDrawString(display, *window, *gc, btn->xpos, btn->ypos + 35, btn->widgetName, strlen(btn->widgetName));
-            }
-            else
-            {
+            } else {
 
             }
+        }
+
+        if(widPTR->widgetType == ITEM_ROUNDGAUGE)
+        {
+            CircularGauge* circularGaugeWidget = (CircularGauge*)widPTR;
+            XDrawRectangle(display, *window,*gc,circularGaugeWidget->xpos,circularGaugeWidget->ypos,250,250);
         }
 
         if(widPTR->widgetType == ITEM_HGRAPH)

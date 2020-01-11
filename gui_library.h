@@ -53,6 +53,13 @@ class menuOption : public Widget
   }
 };
 
+class CircularGauge : public Widget{
+public:
+    CircularGauge(int xpos, int ypos) : Widget(xpos, ypos) {
+     widgetType = ITEM_ROUNDGAUGE;
+    }
+};
+
 class HorizontalGraph : public Widget{
 public:
     float value = 0.0;
