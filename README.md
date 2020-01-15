@@ -4,7 +4,7 @@ This is a from scratch GUI library using the X11 window system. The goal of this
 
 ## Overview
 
-This library relies on a page-renderer scheme to actually draw onto the display. This model allows for the abstract concept of widgets and pages. This allows for a more expandable interface as development continues. 
+This library relies on a page-renderer scheme to actually draw onto the display. This model allows for the abstract concept of widgets and pages. 
 
 ## Features
 
@@ -12,3 +12,4 @@ This library relies on a page-renderer scheme to actually draw onto the display.
 2. Label widgets
 3. Basic editing window
 4. Gauge widgets
+5. More to come
